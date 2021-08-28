@@ -2,11 +2,14 @@ import { logger } from "@src/utils/logger";
 import { SnowflakeScore, Resolvers } from "@src/@codegen";
 import { getSnowflakeScore } from "@src/models/snowflake-score";
 
-import getFields from "graphql-fields";
+import gqlFieldGetter from "graphql-fields";
 import { Database } from "sqlite";
 import { ApolloError } from "apollo-server";
 
-export default function createClosingPriceResolver(db: Database): Resolvers {
+export default function createSnowflakeScoreResolver(
+  db: Database,
+  getFields = gqlFieldGetter
+): Resolvers {
   return {
     Company: {
       async score(company, arg, _, info) {

@@ -1,11 +1,14 @@
 import { Company, Resolvers } from "@src/@codegen";
 import { getCompany, getCompanies } from "@src/models/company";
 
-import getFields from "graphql-fields";
+import gqlFieldGetter from "graphql-fields";
 import { Database } from "sqlite";
 import { UserInputError } from "apollo-server";
 
-export default function createCompanyResolver(db: Database): Resolvers {
+export default function createCompanyResolver(
+  db: Database,
+  getFields = gqlFieldGetter
+): Resolvers {
   return {
     Query: {
       async getCompany(_, { id }, ctx, info) {

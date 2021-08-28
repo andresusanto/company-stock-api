@@ -1,11 +1,14 @@
 import { ClosingPrice, Resolvers } from "@src/@codegen";
 import { getClosingPrices } from "@src/models/closing-price";
 
-import getFields from "graphql-fields";
+import gqlFieldGetter from "graphql-fields";
 import { Database } from "sqlite";
 import { UserInputError } from "apollo-server";
 
-export default function createClosingPriceResolver(db: Database): Resolvers {
+export default function createClosingPriceResolver(
+  db: Database,
+  getFields = gqlFieldGetter
+): Resolvers {
   return {
     Company: {
       async prices(company, { fromDate, toDate }, _, info) {
