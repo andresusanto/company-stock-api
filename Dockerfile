@@ -1,4 +1,5 @@
 FROM node:14-alpine AS builder
+RUN apk add python make gcc g++
 
 WORKDIR /app
 COPY package*.json ./
@@ -9,6 +10,7 @@ RUN npm run build
 
 
 FROM node:14-alpine
+RUN apk add python make gcc g++
 
 WORKDIR /app
 COPY package*.json ./
