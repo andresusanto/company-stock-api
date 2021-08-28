@@ -32,8 +32,7 @@ import createSnowflakeScoreResolver from "@src/resolvers/snowflake-score";
     plugins: [ApolloServerPluginLandingPageLocalDefault({ footer: false })],
   });
 
-  server.listen().then(({ url }) => {
-    logger.info(`Server is ready at ${url}`);
-    if (config.ENABLE_INTROSPECTION) logger.info("Introspection is enabled");
-  });
+  const { url } = await server.listen({ port: config.PORT });
+  logger.info(`Server is ready at ${url}`);
+  if (config.ENABLE_INTROSPECTION) logger.info("Introspection is enabled");
 })();
