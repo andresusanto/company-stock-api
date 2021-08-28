@@ -39,6 +39,8 @@ export async function getCompany(
     .map(getDatabaseFieldName)
     .filter((field): field is string => field !== null)
     .join(",");
+  if (!dbFields.length)
+    throw new Error("getCompany: empty fields after mapping");
 
   const res = await db.get<Company>(
     `SELECT ${dbFields} 
@@ -59,6 +61,8 @@ export async function getCompanies(
     .map(getDatabaseFieldName)
     .filter((field): field is string => field !== null)
     .join(",");
+  if (!dbFields.length)
+    throw new Error("getCompanies: empty fields after mapping");
 
   const res = await db.all<Array<Company>>(
     `SELECT ${dbFields} 

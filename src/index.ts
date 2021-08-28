@@ -1,7 +1,9 @@
 import { merge } from "lodash";
 import { ApolloServer } from "apollo-server";
+import { ApolloServerPluginLandingPageLocalDefault } from "apollo-server-core";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 
+import config from "@src/utils/config";
 import { openDB } from "@src/utils/db";
 import { logger } from "@src/utils/logger";
 
@@ -17,20 +19,21 @@ import createSnowflakeScoreResolver from "@src/resolvers/snowflake-score";
 (async () => {
   const db = await openDB();
 
-  const schema = makeExecutableSchema({
-    typeDefs: [Query, Company, ClosingPrice, SnowflakeScore],
-    resolvers: merge(
-      createCompanyResolver(db),
-      createClosingPriceResolver(db),
-      createSnowflakeScoreResolver(db)
-    ),
-  });
-
   const server = new ApolloServer({
-    schema,
+    schema: makeExecutableSchema({
+      typeDefs: [Query, Company, ClosingPrice, SnowflakeScore],
+      resolvers: merge(
+        createCompanyResolver(db),
+        createClosingPriceResolver(db),
+        createSnowflakeScoreResolver(db)
+      ),
+    }),
+    introspection: config.ENABLE_INTROSPECTION,
+    plugins: [ApolloServerPluginLandingPageLocalDefault({ footer: false })],
   });
 
   server.listen().then(({ url }) => {
     logger.info(`Server is ready at ${url}`);
+    if (config.ENABLE_INTROSPECTION) logger.info("Introspection is enabled");
   });
 })();

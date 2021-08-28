@@ -25,6 +25,8 @@ export async function getClosingPrices(
     .map(getDatabaseFieldName)
     .filter((field): field is string => field !== null)
     .join(",");
+  if (!dbFields.length)
+    throw new Error("getClosingPrices: empty fields after mapping");
 
   const res = await db.all<Array<ClosingPrice>>(
     `SELECT ${dbFields} 

@@ -37,6 +37,8 @@ export async function getSnowflakeScore(
     .map(getDatabaseFieldName)
     .filter((field): field is string => field !== null)
     .join(",");
+  if (!dbFields.length)
+    throw new Error("getSnowflakeScore: empty fields after mapping");
 
   const res = await db.get<SnowflakeScore>(
     `SELECT ${dbFields} 

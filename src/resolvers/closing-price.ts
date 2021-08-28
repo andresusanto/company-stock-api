@@ -3,12 +3,17 @@ import { getClosingPrices } from "@src/models/closing-price";
 
 import getFields from "graphql-fields";
 import { Database } from "sqlite";
+import { UserInputError } from "apollo-server";
 
 export default function createClosingPriceResolver(db: Database): Resolvers {
   return {
     Company: {
       async prices(company, { fromDate, toDate }, _, info) {
-        // TODO: handle fromDate and toDate validation
+        const dateFormat = /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/;
+        if (!dateFormat.test(fromDate))
+          throw new UserInputError("invalid fromDate");
+        if (!dateFormat.test(toDate))
+          throw new UserInputError("invalid toDate");
 
         const fields = Object.keys(getFields(info)) as Array<
           keyof ClosingPrice
