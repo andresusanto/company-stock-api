@@ -1,0 +1,5 @@
+type ClosingPrice {
+  date: String!
+  price: Float!
+  dateCreated: String!
+}

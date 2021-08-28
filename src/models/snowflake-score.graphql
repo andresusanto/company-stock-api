@@ -1,0 +1,12 @@
+type SnowflakeScore {
+  dateGenerated: String!
+  sentence: String!
+  dividend: Int!
+  future: Int!
+  health: Int!
+  management: Int!
+  past: Int!
+  value: Int!
+  misc: Int!
+  total: Int!
+}

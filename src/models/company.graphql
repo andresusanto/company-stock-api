@@ -1,0 +1,15 @@
+type Company {
+  id: String!
+  name: String!
+  tickerSymbol: String!
+  exchangeSymbol: String!
+  uniqueSymbol: String!
+  dateGenerated: String!
+  securityName: String!
+  exchangeCountryIso: String!
+  listingCountryIso: String!
+  canonicalUrl: String!
+  uniqueSymbolSlug: String!
+  score: SnowflakeScore
+  prices(fromDate: String!, toDate: String!): [ClosingPrice]
+}
