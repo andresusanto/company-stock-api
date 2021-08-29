@@ -1,5 +1,7 @@
 # Index Analysis
 
+This index analysis ensures that the application performs using the most optimised database queries, making the application highly fast and scalable.
+
 ## swsCompany
 
 ### Schema
