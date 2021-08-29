@@ -24,14 +24,37 @@ test("getCompany: filter-out skipped field", async () => {
 });
 
 test("getCompanies: filter-out skipped field", async () => {
+  const mockDb = jest.fn().mockImplementation((query: string, limit) => {
+    expect(limit).toEqual(10);
+    expect(query).toEqual(
+      expect.stringMatching(
+        /^SELECT listing_currency_iso as listingCountryIso[\s\n]+FROM swsCompany[\s\n]+ORDER BY.+/
+      )
+    );
+    return "mock";
+  });
+
+  await expect(
+    getCompanies(
+      { all: mockDb } as unknown as Database,
+      ["__typename", "prices", "listingCountryIso"],
+      10,
+      null
+    )
+  ).resolves.toEqual("mock");
+
+  expect(mockDb).toBeCalledTimes(1);
+});
+
+test("getCompanies: with afterCompanyID", async () => {
   const mockDb = jest
     .fn()
-    .mockImplementation((query: string, limit, offset) => {
+    .mockImplementation((query: string, afterCompanyID, limit) => {
+      expect(afterCompanyID).toEqual("after");
       expect(limit).toEqual(10);
-      expect(offset).toEqual(0);
       expect(query).toEqual(
         expect.stringMatching(
-          /^SELECT listing_currency_iso as listingCountryIso[\s\n]+FROM.+/
+          /^SELECT listing_currency_iso as listingCountryIso[\s\n]+FROM swsCompany[\s\n]+WHERE id >.+/
         )
       );
       return "mock";
@@ -42,7 +65,7 @@ test("getCompanies: filter-out skipped field", async () => {
       { all: mockDb } as unknown as Database,
       ["__typename", "prices", "listingCountryIso"],
       10,
-      0
+      "after"
     )
   ).resolves.toEqual("mock");
 
@@ -57,7 +80,7 @@ test("throw error if resulting field is empty", async () => {
       { all: mockDb } as unknown as Database,
       ["__typename", "score"],
       1,
-      2
+      null
     )
   ).rejects.toEqual(new Error("getCompanies: empty fields after mapping"));
   await expect(

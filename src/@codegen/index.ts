@@ -57,7 +57,7 @@ export type QueryGetCompanyArgs = {
 
 export type QueryGetCompaniesArgs = {
   limit: Scalars['Int'];
-  offset: Scalars['Int'];
+  afterCompanyID?: Maybe<Scalars['String']>;
 };
 
 export type SnowflakeScore = {
@@ -191,7 +191,7 @@ export type CompanyResolvers<ContextType = any, ParentType extends ResolversPare
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   getCompany?: Resolver<Maybe<ResolversTypes['Company']>, ParentType, ContextType, RequireFields<QueryGetCompanyArgs, 'id'>>;
-  getCompanies?: Resolver<Maybe<Array<Maybe<ResolversTypes['Company']>>>, ParentType, ContextType, RequireFields<QueryGetCompaniesArgs, 'limit' | 'offset'>>;
+  getCompanies?: Resolver<Maybe<Array<Maybe<ResolversTypes['Company']>>>, ParentType, ContextType, RequireFields<QueryGetCompaniesArgs, 'limit'>>;
 };
 
 export type SnowflakeScoreResolvers<ContextType = any, ParentType extends ResolversParentTypes['SnowflakeScore'] = ResolversParentTypes['SnowflakeScore']> = {

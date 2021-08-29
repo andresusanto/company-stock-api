@@ -1,4 +1,4 @@
 type Query {
   getCompany(id: String!): Company
-  getCompanies(limit: Int!, offset: Int!): [Company]
+  getCompanies(limit: Int!, afterCompanyID: String): [Company]
 }

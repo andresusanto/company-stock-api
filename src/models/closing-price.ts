@@ -14,6 +14,23 @@ function getDatabaseFieldName(modelField: keyof ClosingPrice): string | null {
   }
 }
 
+/**
+ * getClosingPrices returns the closing stock price of
+ * a company ('companyId') from fromDate to toDate.
+ *
+ * The primary key (date, company_id) would result in
+ * suboptimal query performance when filtering out
+ * closing prices using WHERE date >= ? AND date <= ? AND
+ * company_id = ?. Therefore, an additional index
+ * namely `swsCompanyPriceClose_company_date` is created
+ * to make the operation fast.
+ *
+ * The time complexity for this operation is O(k) where
+ * k is the distance/number of days between fromDate
+ * and toDate.
+ *
+ * See /data/INDEX-ANALYSIS.md for more details
+ */
 export async function getClosingPrices(
   db: Database,
   fields: Array<keyof ClosingPrice>,

@@ -30,6 +30,13 @@ function getDatabaseFieldName(modelField: keyof Company): string | null {
   }
 }
 
+/**
+ * getCompany returns a single company from its ID.
+ * The time complexity for this query would be O(log(n)) as
+ * this query will hit sqlite_autoindex_swsCompany_1 index.
+ *
+ * See /data/INDEX-ANALYSIS.md for more details
+ */
 export async function getCompany(
   db: Database,
   fields: Array<keyof Company>,
@@ -51,11 +58,23 @@ export async function getCompany(
   return res;
 }
 
+/**
+ * getCompanies returns a list of companies with ID larger than
+ * 'afterCompanyID' and limited to 'limit'.
+ *
+ * The time complexity for this query would be O(k) where k is
+ * the number of retrieved rows. This query is very efficient
+ * as it does not perform FULL TABLE scan and will use
+ * the sqlite_autoindex_swsCompany_1 index to skip rows before
+ * the 'afterCompanyID'.
+ *
+ * See /data/INDEX-ANALYSIS.md for more details
+ */
 export async function getCompanies(
   db: Database,
   fields: Array<keyof Company>,
   limit: number,
-  offset: number
+  afterCompanyID: string | null
 ): Promise<Array<Company>> {
   const dbFields = fields
     .map(getDatabaseFieldName)
@@ -64,13 +83,16 @@ export async function getCompanies(
   if (!dbFields.length)
     throw new Error("getCompanies: empty fields after mapping");
 
+  const params = [];
+  if (afterCompanyID) params.push(afterCompanyID);
+  params.push(limit);
   const res = await db.all<Array<Company>>(
     `SELECT ${dbFields} 
         FROM swsCompany
-        LIMIT ?
-        OFFSET ?`,
-    limit,
-    offset
+        ${afterCompanyID ? "WHERE id > ?" : ""}
+        ORDER BY id
+        LIMIT ?`,
+    ...params
   );
   return res;
 }

@@ -18,9 +18,14 @@ export default function createCompanyResolver(
         if (!res) throw new UserInputError("company not found");
         return res;
       },
-      async getCompanies(_, { limit, offset }, ctx, info) {
+      async getCompanies(_, { limit, afterCompanyID }, ctx, info) {
         const fields = Object.keys(getFields(info)) as Array<keyof Company>;
-        const res = await getCompanies(db, fields, limit, offset);
+        const res = await getCompanies(
+          db,
+          fields,
+          limit,
+          afterCompanyID || null
+        );
 
         return res;
       },

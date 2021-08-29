@@ -28,6 +28,15 @@ function getDatabaseFieldName(modelField: keyof SnowflakeScore): string | null {
   }
 }
 
+/**
+ * getSnowflakeScore returns the snowflake score from the given 'companyId'.
+ *
+ * Originally, there is no index on field company_id, but a new index was
+ * created on the database namely `swsCompanyScore_company_id`. As a result,
+ * the time complexity of this method would be O(log(n)).
+ *
+ * See /data/INDEX-ANALYSIS.md for more details
+ */
 export async function getSnowflakeScore(
   db: Database,
   fields: Array<keyof SnowflakeScore>,
